@@ -1,11 +1,24 @@
+import { omit } from "lodash";
+import { stringify } from "querystring";
 import { fetchUtils } from "react-admin";
-import { stringify } from "query-string";
+import { getLocalStorage } from "../utils";
 
-const apiUrl = "http://localhost:5005/api/v1/admin";
-const httpClient = fetchUtils.fetchJson;
+const apiUrl = "http://localhost:6006/v1";
+
+const fetchJson = (url: string, options: any = {}) => {
+    if (!options.headers) {
+        options.headers = new Headers({ Accept: "application/json" });
+    }
+    const token = getLocalStorage("token");
+    // console.log(token);
+    options.headers.set("Authorization", `Bearer ${token}`);
+    return fetchUtils.fetchJson(url, options);
+};
+
+const httpClient = fetchJson;
 
 const MyProviders = {
-    getList: (resource, params) => {
+    getList: (resource: any, params: any) => {
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
@@ -16,25 +29,25 @@ const MyProviders = {
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
         return httpClient(url).then(({ headers, json }) => ({
-            data: json,
-            total: parseInt(headers.get("content-range").split("/").pop(), 10),
+            data: json.results,
+            total: json.totalResults,
         }));
     },
 
-    getOne: (resource, params) =>
+    getOne: (resource: any, params: any) =>
         httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
             data: json,
         })),
 
-    getMany: (resource, params) => {
+    getMany: (resource: any, params: any) => {
         const query = {
-            filter: JSON.stringify({ id: params.ids }),
+            filter: JSON.stringify({ id: { $in: [...params.ids] } }),
         };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
-        return httpClient(url).then(({ json }) => ({ data: json }));
+        return httpClient(url).then(({ json }) => ({ data: json.results }));
     },
 
-    getManyReference: (resource, params) => {
+    getManyReference: (resource: any, params: any) => {
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = {
@@ -49,17 +62,22 @@ const MyProviders = {
 
         return httpClient(url).then(({ headers, json }) => ({
             data: json,
-            total: parseInt(headers.get("content-range").split("/").pop(), 10),
+            total: json.totalResults,
         }));
     },
 
-    update: (resource, params) =>
-        httpClient(`${apiUrl}/${resource}/${params.id}`, {
-            method: "PUT",
-            body: JSON.stringify(params.data),
-        }).then(({ json }) => ({ data: json })),
+    update: (resource: any, params: any) => {
+        let newParams: any = omit(params!.data, ["id"]);
+        if (resource === "campaigns") {
+            newParams.limit = newParams.limit.$numberDecimal;
+        }
+        return httpClient(`${apiUrl}/${resource}/${params.id}`, {
+            method: "PATCH",
+            body: JSON.stringify(newParams),
+        }).then(({ json }) => ({ data: json }));
+    },
 
-    updateMany: (resource, params) => {
+    updateMany: (resource: any, params: any) => {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
         };
@@ -69,7 +87,7 @@ const MyProviders = {
         }).then(({ json }) => ({ data: json }));
     },
 
-    create: (resource, params) =>
+    create: (resource: any, params: any) =>
         httpClient(`${apiUrl}/${resource}`, {
             method: "POST",
             body: JSON.stringify(params.data),
@@ -77,12 +95,12 @@ const MyProviders = {
             data: { ...params.data, id: json.id },
         })),
 
-    delete: (resource, params) =>
+    delete: (resource: any, params: any) =>
         httpClient(`${apiUrl}/${resource}/${params.id}`, {
             method: "DELETE",
-        }).then(({ json }) => ({ data: json })),
+        }).then(({ json }) => ({ data: params.previousData })),
 
-    deleteMany: (resource, params) => {
+    deleteMany: (resource: any, params: any) => {
         const query = {
             filter: JSON.stringify({ id: params.ids }),
         };

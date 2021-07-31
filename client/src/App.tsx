@@ -1,34 +1,55 @@
 import * as React from "react";
-import { Admin, Resource, ListGuesser, EditGuesser } from "react-admin";
-import jsonServerProvider from "ra-data-json-server";
-import { UserList } from "./users";
-import { PostList, PostEdit, PostCreate } from "./posts";
-import authProvider from "./authProvider";
-import MyProviders from "./MyProviders";
+//, ListGuesser, EditGuesser
+import { Admin, Resource } from "react-admin";
+import {
+    UserList,
+    UserEdit,
+    UserCreate,
+    UserShow,
+} from "./components/user/UserPage";
+import { CampaignList, CampaignEdit } from "./components/campaign/CampaignPage";
+import {
+    CategoryList,
+    CategoryEdit,
+    CategoryCreate,
+} from "./components/category/CategoryPage";
+import authProvider from "./providers/authProvider";
+import userProvider from "./providers/userProvider";
 
-import Dashboard from "./Dashboard";
-import PostIcon from "@material-ui/icons/Book";
+import Dashboard from "./components/Dashboard";
 import UserIcon from "@material-ui/icons/Group";
-
-const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
+import LoginPage from "./components/Login";
+import CategoryIcon from "@material-ui/icons/Category";
 
 const App = () => (
     <Admin
+        loginPage={LoginPage}
         authProvider={authProvider}
         dashboard={Dashboard}
-        dataProvider={MyProviders}
-        // dataProvider={dataProvider}
+        dataProvider={userProvider}
     >
-        <Resource name="categories" list={UserList} icon={UserIcon} />
-        {/* <Resource name="users" list={UserList} icon={UserIcon} /> */}
-        {/* <Resource
-            name="posts"
-            list={PostList}
-            edit={PostEdit}
-            create={PostCreate}
-            icon={PostIcon}
-        /> */}
-        {/* <Resource name="categories" list={ListGuesser} /> */}
+        <Resource
+            name="users"
+            show={UserShow}
+            list={UserList}
+            edit={UserEdit}
+            create={UserCreate}
+            icon={UserIcon}
+        />
+        <Resource
+            name="categories"
+            list={CategoryList}
+            edit={CategoryEdit}
+            create={CategoryCreate}
+            icon={CategoryIcon}
+        />
+        <Resource
+            name="campaigns"
+            list={CampaignList}
+            edit={CampaignEdit}
+            // create={CategoryCreate}
+            // icon={CategoryIcon}
+        />
     </Admin>
 );
 
