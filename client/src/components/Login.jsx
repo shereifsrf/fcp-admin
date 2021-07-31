@@ -28,7 +28,7 @@ const MyLoginPage = () => {
         <ThemeProvider theme={createTheme(defaultTheme)}>
             <Container maxWidth="sm">
                 <form onSubmit={submit}>
-                    <Typography variant="h2">Admin Portal</Typography>
+                    <Typography variant="h4">Please Login</Typography>
                     <TextField
                         variant="filled"
                         margin="normal"
