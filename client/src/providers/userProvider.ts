@@ -6,7 +6,9 @@ import { getLocalStorage } from "../utils";
 const mode = process.env.NODE_ENV;
 const serverUrl = process.env.SERVER_URL;
 const localUrl = process.env.LOCAL_URL;
+// console.log("HERE##############: ", mode, serverUrl, localUrl);
 let apiUrl = mode === "production" ? serverUrl : localUrl;
+apiUrl += "/v1";
 
 const fetchJson = (url: string, options: any = {}) => {
     if (!options.headers) {
