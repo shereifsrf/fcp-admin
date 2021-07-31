@@ -17,7 +17,7 @@ const getCampaigns = catchAsync(async (req, res) => {
     req.query.filter._id = req.query.filter.id;
     delete req.query.filter.id;
   }
-  const filter = pick(req.query.filter, ['name', 'role', '_id']);
+  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId']);
   const options = pick(req.query, ['sort', 'limit', 'page']);
   const result = await campaignService.queryCampaigns(filter, options);
   res.send(result);
