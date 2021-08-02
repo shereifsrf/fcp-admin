@@ -4,9 +4,8 @@ import { fetchUtils } from "react-admin";
 import { getLocalStorage } from "../utils";
 
 const mode = process.env.NODE_ENV;
-const serverUrl = process.env.SERVER_URL;
-const localUrl = process.env.LOCAL_URL;
-// console.log("HERE##############: ", mode, serverUrl, localUrl);
+const serverUrl = process.env.REACT_APP_SERVER_URL;
+const localUrl = process.env.REACT_APP_LOCAL_URL;
 let apiUrl = mode === "production" ? serverUrl : localUrl;
 apiUrl += "/v1";
 
