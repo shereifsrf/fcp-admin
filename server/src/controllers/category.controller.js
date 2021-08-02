@@ -4,6 +4,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { categoryService } = require('../services');
+const { getQuery } = require('../utils/helper');
 
 const createCategory = catchAsync(async (req, res) => {
   req.body.createdBy = req.user.id;
@@ -12,8 +13,8 @@ const createCategory = catchAsync(async (req, res) => {
 });
 
 const getCategories = catchAsync(async (req, res) => {
-  if (!isEmpty(req.query.filter) && !isEmpty(req.query.filter.id)) {
-    req.query.filter = JSON.parse(req.query.filter);
+  req.query.filter = JSON.parse(req.query.filter);
+  if (!isEmpty(req.query.filter.id)) {
     req.query.filter._id = req.query.filter.id;
     delete req.query.filter.id;
   }
@@ -41,9 +42,27 @@ const deleteCategory = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const deleteManyCategories = catchAsync(async (req, res) => {
+  const query = getQuery(req);
+  let idArr = [];
+  const result = await categoryService.queryCategories(query.filter, query.options);
+  if (!isEmpty(query.filter) && !isEmpty(query.filter._id)) {
+    idArr = query.filter._id.$in;
+  }
+  await Promise.all(
+    // eslint-disable-next-line array-callback-return
+    idArr.map((id) => {
+      categoryService.deleteCampaignById(id);
+    })
+  );
+
+  res.status(httpStatus.OK).send(result);
+});
+
 module.exports = {
   createCategory,
   getCategories,
+  deleteManyCategories,
   getCategory,
   updateCategory,
   deleteCategory,

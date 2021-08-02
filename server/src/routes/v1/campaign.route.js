@@ -8,7 +8,8 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageUsers'), campaignController.createCampaign)
-  .get(auth('getUsers'), campaignController.getCampaigns);
+  .get(auth('getUsers'), campaignController.getCampaigns)
+  .delete(auth('manageUsers'), campaignController.deleteManyCampaigns);
 
 router
   .route('/:campaignId')

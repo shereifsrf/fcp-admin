@@ -4,6 +4,7 @@ const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { userService } = require('../services');
+const { getQuery } = require('../utils/helper');
 
 const createUser = catchAsync(async (req, res) => {
   const user = await userService.createUser(req.body);
@@ -40,9 +41,27 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const deleteManyUsers = catchAsync(async (req, res) => {
+  const query = getQuery(req);
+  let idArr = [];
+  const result = await userService.queryUsers(query.filter, query.options);
+  if (!isEmpty(query.filter) && !isEmpty(query.filter._id)) {
+    idArr = query.filter._id.$in;
+  }
+  await Promise.all(
+    // eslint-disable-next-line array-callback-return
+    idArr.map((id) => {
+      userService.deleteCampaignById(id);
+    })
+  );
+
+  res.status(httpStatus.OK).send(result);
+});
+
 module.exports = {
   createUser,
   getUsers,
+  deleteManyUsers,
   getUser,
   updateUser,
   deleteUser,

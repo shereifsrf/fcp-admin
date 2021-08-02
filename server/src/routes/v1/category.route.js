@@ -8,7 +8,8 @@ const router = express.Router();
 router
   .route('/')
   .post(auth('manageUsers'), categoryController.createCategory)
-  .get(auth('getUsers'), categoryController.getCategories);
+  .get(auth('getUsers'), categoryController.getCategories)
+  .delete(auth('manageUsers'), categoryController.deleteManyCategories);
 
 router
   .route('/:categoryId')

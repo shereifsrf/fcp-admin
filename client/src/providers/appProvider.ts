@@ -27,7 +27,8 @@ const MyProviders = {
         const { field, order } = params.sort;
         const query = {
             sort: JSON.stringify([field, order]),
-            range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+            page: JSON.stringify(page),
+            limit: JSON.stringify(perPage),
             filter: JSON.stringify(params.filter),
         };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
@@ -83,12 +84,12 @@ const MyProviders = {
 
     updateMany: (resource: any, params: any) => {
         const query = {
-            filter: JSON.stringify({ id: params.ids }),
+            filter: JSON.stringify({ id: { $in: [...params.ids] } }),
         };
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: "PUT",
             body: JSON.stringify(params.data),
-        }).then(({ json }) => ({ data: json }));
+        }).then(({ json }) => ({ data: json.results }));
     },
 
     create: (resource: any, params: any) =>
@@ -106,11 +107,11 @@ const MyProviders = {
 
     deleteMany: (resource: any, params: any) => {
         const query = {
-            filter: JSON.stringify({ id: params.ids }),
+            filter: JSON.stringify({ id: { $in: [...params.ids] } }),
         };
         return httpClient(`${apiUrl}/${resource}?${stringify(query)}`, {
             method: "DELETE",
-        }).then(({ json }) => ({ data: json }));
+        }).then(({ json }) => ({ data: json.results }));
     },
 };
 

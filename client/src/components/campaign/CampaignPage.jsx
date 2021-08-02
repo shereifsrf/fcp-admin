@@ -1,5 +1,7 @@
 // import { values } from "lodash";
 import * as React from "react";
+import PropTypes from "prop-types";
+
 import {
     List,
     Datagrid,
@@ -19,6 +21,7 @@ import {
     useRecordContext,
 } from "react-admin";
 import { getImageSrc } from "../../utils";
+import { FormHelperText } from "@material-ui/core";
 // import MyUrlField from "./MyUrlField";
 
 // const editValidate = (values) => {
@@ -36,11 +39,22 @@ import { getImageSrc } from "../../utils";
 //     { id: "CAMPAIGNER", name: "CAMPAIGNER" },
 //     { id: "DONOR", name: "DONOR" },
 // ];
+
 const CusImageField = (props) => {
     const record = useRecordContext(props);
-    // console.log(record.document);
+    // console.log(props.width);
     const src = getImageSrc(record.document);
-    return <img src={src} alt="No Cover" />;
+    return (
+        <>
+            <FormHelperText>{props.label}</FormHelperText>
+            <img width={`${props.width}px`} src={src} alt="No Cover" />{" "}
+        </>
+    );
+};
+
+CusImageField.defaultProps = {
+    width: 100,
+    label: "",
 };
 
 export const CampaignList = (props) => (
@@ -49,14 +63,14 @@ export const CampaignList = (props) => (
             {/* <TextField source="document.data.type" /> */}
 
             <CusImageField source="document" />
-            <BooleanField source="isVerified" />
-            <DateField source="expiresAt" />
-            <BooleanField source="isVerifyDocument" />
             <TextField source="name" />
-            <TextField source="description" />
+            <BooleanField source="isVerified" />
+            <BooleanField source="isVerifyDocument" />
             <NumberField source="limit.$numberDecimal" label="Limit" />
+            <DateField source="expiresAt" label="Expires" />
+            <TextField source="description" />
             <ReferenceField source="categoryId" reference="categories">
-                <TextField source="name" />
+                <TextField source="name" label="category" />
             </ReferenceField>
             <ReferenceField source="userId" reference="users">
                 <TextField source="name" />
@@ -75,7 +89,11 @@ export const CampaignList = (props) => (
 export const CampaignEdit = (props) => (
     <Edit {...props}>
         <SimpleForm>
-            <CusImageField source="document" />
+            <TextField source="id" label="Campaign id" />
+            <ReferenceField source="userId" reference="users">
+                <TextField source="name" />
+            </ReferenceField>
+            <CusImageField source="document" width={300} label="Cover Image" />
             <BooleanInput source="isVerified" />
             <DateInput source="expiresAt" />
             <BooleanInput source="isVerifyDocument" />
@@ -85,10 +103,12 @@ export const CampaignEdit = (props) => (
             <ReferenceInput source="categoryId" reference="categories">
                 <SelectInput optionText="name" />
             </ReferenceInput>
-            <TextInput source="id" />
-            <TextInput source="createdBy" />
-            <TextInput source="updatedBy" />
-            <TextInput source="id" />
+            <ReferenceField source="createdBy" reference="users">
+                <TextField source="name" />
+            </ReferenceField>
+            <ReferenceField source="updatedBy" reference="users">
+                <TextField source="name" />
+            </ReferenceField>
         </SimpleForm>
     </Edit>
 );

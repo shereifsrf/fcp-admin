@@ -14,7 +14,7 @@ import {
     CategoryCreate,
 } from "./components/category/CategoryPage";
 import authProvider from "./providers/authProvider";
-import userProvider from "./providers/userProvider";
+import appProvider from "./providers/appProvider";
 
 import Dashboard from "./components/Dashboard";
 import UserIcon from "@material-ui/icons/Group";
@@ -26,7 +26,7 @@ const App = () => (
         loginPage={LoginPage}
         authProvider={authProvider}
         dashboard={Dashboard}
-        dataProvider={userProvider}
+        dataProvider={appProvider}
     >
         <Resource
             name="users"

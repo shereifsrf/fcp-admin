@@ -1,9 +1,9 @@
 const httpStatus = require('http-status');
 const { isEmpty } = require('lodash');
-const pick = require('../utils/pick');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
 const { campaignService } = require('../services');
+const { getQuery } = require('../utils/helper');
 
 const createCampaign = catchAsync(async (req, res) => {
   req.body.createdBy = req.user.id;
@@ -12,14 +12,8 @@ const createCampaign = catchAsync(async (req, res) => {
 });
 
 const getCampaigns = catchAsync(async (req, res) => {
-  if (!isEmpty(req.query.filter) && !isEmpty(req.query.filter.id)) {
-    req.query.filter = JSON.parse(req.query.filter);
-    req.query.filter._id = req.query.filter.id;
-    delete req.query.filter.id;
-  }
-  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId']);
-  const options = pick(req.query, ['sort', 'limit', 'page']);
-  const result = await campaignService.queryCampaigns(filter, options);
+  const query = getQuery(req);
+  const result = await campaignService.queryCampaigns(query.filter, query.options);
   res.send(result);
 });
 
@@ -41,10 +35,28 @@ const deleteCampaign = catchAsync(async (req, res) => {
   res.status(httpStatus.NO_CONTENT).send();
 });
 
+const deleteManyCampaigns = catchAsync(async (req, res) => {
+  const query = getQuery(req);
+  let idArr = [];
+  const result = await campaignService.queryCampaigns(query.filter, query.options);
+  if (!isEmpty(query.filter) && !isEmpty(query.filter._id)) {
+    idArr = query.filter._id.$in;
+  }
+  await Promise.all(
+    // eslint-disable-next-line array-callback-return
+    idArr.map((id) => {
+      campaignService.deleteCampaignById(id);
+    })
+  );
+
+  res.status(httpStatus.OK).send(result);
+});
+
 module.exports = {
   createCampaign,
   getCampaigns,
   getCampaign,
   updateCampaign,
   deleteCampaign,
+  deleteManyCampaigns,
 };
