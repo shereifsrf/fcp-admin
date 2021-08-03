@@ -3,6 +3,7 @@ const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
 const categoryRoute = require('./category.route');
 const campaignRoute = require('./campaign.route');
+const proofRoute = require('./proof.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -24,6 +25,10 @@ const defaultRoutes = [
   {
     path: '/campaigns',
     route: campaignRoute,
+  },
+  {
+    path: '/campaignproofs',
+    route: proofRoute,
   },
   {
     path: '/status',

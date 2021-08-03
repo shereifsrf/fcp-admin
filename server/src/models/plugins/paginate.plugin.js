@@ -20,16 +20,17 @@ const paginate = (schema) => {
    * @returns {Promise<QueryResult>}
    */
   schema.statics.paginate = async function (filter, options) {
-    let sort = '';
+    let sort = {};
     if (options.sortBy) {
       const sortingCriteria = [];
       options.sortBy.split(',').forEach((sortOption) => {
         const [key, order] = sortOption.split(':');
-        sortingCriteria.push((order === 'desc' ? '-' : '') + key);
+        sortingCriteria.push(`"${key}":"${order === 'DESC' ? '-1' : '1'}"`);
       });
-      sort = sortingCriteria.join(' ');
+      const str = `{${sortingCriteria.join(',')}}`;
+      sort = JSON.parse(str);
     } else {
-      sort = 'createdAt';
+      sort = { createdAt: -1 };
     }
 
     const limit = options.limit && parseInt(options.limit, 10) > 0 ? parseInt(options.limit, 10) : 10;

@@ -24,9 +24,18 @@ const httpClient = fetchJson;
 const MyProviders = {
     getList: (resource: any, params: any) => {
         const { page, perPage } = params.pagination;
-        const { field, order } = params.sort;
+        let { field, order } = params.sort;
+        switch (field.toString()) {
+            case "limit.$numberDecimal":
+                field = "limit";
+                break;
+            case "id":
+                field = "_id";
+                break;
+        }
+
         const query = {
-            sort: JSON.stringify([field, order]),
+            sortBy: field + ":" + order,
             page: JSON.stringify(page),
             limit: JSON.stringify(perPage),
             filter: JSON.stringify(params.filter),
@@ -54,19 +63,37 @@ const MyProviders = {
 
     getManyReference: (resource: any, params: any) => {
         const { page, perPage } = params.pagination;
-        const { field, order } = params.sort;
+        let { field, order } = params.sort;
+
+        switch (field.toString()) {
+            case "limit.$numberDecimal":
+                field = "limit";
+                break;
+            case "id":
+                field = "_id";
+                break;
+        }
         const query = {
-            sort: JSON.stringify([field, order]),
-            range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+            sortBy: field + ":" + order,
+            page: JSON.stringify(page),
+            limit: JSON.stringify(perPage),
             filter: JSON.stringify({
                 ...params.filter,
                 [params.target]: params.id,
             }),
         };
+        // const query = {
+        //     sortBy: JSON.stringify([field, order]),
+        //     range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+        //     filter: JSON.stringify({
+        //         ...params.filter,
+        //         [params.target]: params.id,
+        //     }),
+        // };
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
         return httpClient(url).then(({ headers, json }) => ({
-            data: json,
+            data: json.results,
             total: json.totalResults,
         }));
     },
