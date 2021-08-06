@@ -16,7 +16,7 @@ import {
 import authProvider from "./providers/authProvider";
 import appProvider from "./providers/appProvider";
 
-import Dashboard from "./components/Dashboard";
+// import Dashboard from "./components/Dashboard";
 import UserIcon from "@material-ui/icons/Group";
 import LoginPage from "./components/Login";
 import CategoryIcon from "@material-ui/icons/Category";
