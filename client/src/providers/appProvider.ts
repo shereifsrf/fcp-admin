@@ -106,7 +106,12 @@ const MyProviders = {
         return httpClient(`${apiUrl}/${resource}/${params.id}`, {
             method: "PATCH",
             body: JSON.stringify(newParams),
-        }).then(({ json }) => ({ data: json }));
+        })
+            .then(({ json }) => ({ data: json }))
+            .catch((e) => {
+                console.log(e);
+                return e;
+            });
     },
 
     updateMany: (resource: any, params: any) => {

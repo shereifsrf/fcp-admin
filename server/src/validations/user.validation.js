@@ -36,13 +36,15 @@ const updateUser = {
   body: Joi.object()
     .keys({
       email: Joi.string().email(),
-      password: Joi.string().custom(password),
+      password: Joi.string(),
       name: Joi.string(),
       rating: Joi.number(),
       isEmailVerified: Joi.boolean(),
       isActive: Joi.boolean(),
       role: Joi.string(),
       updatedBy: Joi.string(),
+      createdAt: Joi.string(),
+      updatedAt: Joi.string(),
     })
     .min(1),
 };

@@ -49,12 +49,21 @@ const AuthProvider = {
             : Promise.reject();
     },
     // called when the user navigates to a new location, to check for permissions / roles
-    getPermissions: () => Promise.resolve(),
+    getPermissions: () => {
+        try {
+            const { role } = getLocalStorage("user");
+            // console.log(id, fullName, email);
+            return Promise.resolve(role);
+        } catch (error) {
+            console.log(error);
+            return Promise.reject(error);
+        }
+    },
     getIdentity: () => {
         try {
-            const { id, name: fullName, email } = getLocalStorage("user");
+            const { id, name: fullName, email, role } = getLocalStorage("user");
             // console.log(id, fullName, email);
-            return Promise.resolve({ id, fullName, email });
+            return Promise.resolve({ id, fullName, email, role });
         } catch (error) {
             console.log(error);
             return Promise.reject(error);

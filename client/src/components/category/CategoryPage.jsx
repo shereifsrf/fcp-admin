@@ -33,10 +33,10 @@ export const CategoryList = (props) => (
         <Datagrid rowClick="edit">
             <TextField source="name" />
             <TextField source="description" />
-            <ReferenceField source="createdBy" reference="users">
+            <ReferenceField source="createdBy" reference="users" link={false}>
                 <TextField source="name" />
             </ReferenceField>
-            <ReferenceField source="updatedBy" reference="users">
+            <ReferenceField source="updatedBy" reference="users" link={false}>
                 <TextField source="name" />
             </ReferenceField>
             {/* <TextField source="id" /> */}

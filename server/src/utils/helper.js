@@ -13,10 +13,13 @@ const getQuery = (req) => {
   //   req.query.sortBy._id = req.query.sortBy.id;
   //   delete req.query.sortBy.id;
   // }
-  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId']);
+  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId', 'expiresAt']);
   if (!isEmpty(filter.campaignId)) {
     filter.campaignId = mongoose.Types.ObjectId(filter.campaignId);
   }
+  // if (!isEmpty(filter.expiresAt)) {
+  //   filter.expiresAt.$gte = '2021-08-22T19:41:09.894Z';
+  // }
   const options = pick(req.query, ['sortBy', 'limit', 'page']);
   return { filter, options };
 };

@@ -2,10 +2,12 @@ const PUBLIC = 'PUBLIC';
 const DONOR = 'DONOR';
 const CAMPAIGNER = 'CAMPAIGNER';
 const ADMIN = 'ADMIN';
+const MASTER = 'MASTER';
 
 const allRoles = {
   // user: [],
   ADMIN: ['getUsers', 'manageUsers'],
+  MASTER: ['getUsers', 'manageUsers'],
   CAMPAIGNER: [],
   DONOR: [],
 };
@@ -20,4 +22,5 @@ module.exports = {
   DONOR,
   CAMPAIGNER,
   ADMIN,
+  MASTER,
 };

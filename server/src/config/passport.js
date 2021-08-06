@@ -2,7 +2,7 @@ const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 const config = require('./config');
 // const { tokenTypes } = require('./tokens');
 const { User } = require('../models');
-const { ADMIN } = require('./roles');
+const { ADMIN, MASTER } = require('./roles');
 
 const jwtOptions = {
   secretOrKey: config.jwt.secret,
@@ -19,8 +19,8 @@ const jwtVerify = async (payload, done) => {
     if (!user) {
       return done(null, false);
     }
-    if (user.role !== ADMIN) {
-      return done(null, false, 'Not an Admin');
+    if (![MASTER, ADMIN].includes(user.role)) {
+      return done(null, false, 'Not Authorized');
     }
     done(null, user);
   } catch (error) {

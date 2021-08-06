@@ -26,7 +26,7 @@ const App = () => (
     <Admin
         loginPage={LoginPage}
         authProvider={authProvider}
-        dashboard={Dashboard}
+        // dashboard={Dashboard}
         dataProvider={appProvider}
     >
         <Resource

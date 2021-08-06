@@ -82,6 +82,10 @@ const PostEditActions = ({ basePath, record, resource }) => (
     </TopToolbar>
 );
 
+const PostTitle = ({ record }) => {
+    return <span>Campaign Name: {record ? `"${record.name}"` : ""}</span>;
+};
+
 export const CampaignList = (props) => (
     <List
         {...props}
@@ -90,41 +94,50 @@ export const CampaignList = (props) => (
             field: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
             order: "DESC",
         }}
+        filter={{
+            expiresAt: { $gte: new Date(Date.now()).toISOString() },
+        }}
+        perPage={5}
     >
         <Datagrid rowClick="edit">
             {/* <TextField source="document.data.type" /> */}
 
-            <TextField source="name" />
+            <TextField source="name" className={{ width: "100px" }} />
             <CusImageField source="document" />
-            <BooleanField source="isVerified" label="verified?" />
+            <BooleanField source="isVerified" label="Verified?" />
             <BooleanField
                 source="isVerifyDocument"
-                label="Need Document Verification?"
+                label="Document Submitted?"
             />
             <NumberField source="limit.$numberDecimal" label="Limit" />
             <DateField source="expiresAt" label="Expires" />
-            <TextField source="description" />
+            {/* <TextField source="description" /> */}
             <ReferenceField source="categoryId" reference="categories">
                 <TextField source="name" label="category" />
             </ReferenceField>
-            <ReferenceField source="userId" reference="users">
+            <ReferenceField source="userId" reference="users" linkType="show">
                 <TextField source="name" />
             </ReferenceField>
-            <ReferenceField source="updatedBy" reference="users">
+            {/* <ReferenceField
+                source="updatedBy"
+                reference="users"
+                linkType="show"
+            >
                 <TextField source="name" />
-            </ReferenceField>
-            <ReferenceField source="createdBy" reference="users">
+            </ReferenceField> */}
+            {/* <ReferenceField
+                source="createdBy"
+                reference="users"
+                linkType="show"
+            >
                 <TextField source="name" />
-            </ReferenceField>
-            <DateField source="updatedAt" label="Updated On" />
-            <DateField source="createdAt" label="Created On" />
+            </ReferenceField> */}
+            {/* <DateField source="updatedAt" label="Updated On" />
+            <DateField source="createdAt" label="Created On" /> */}
             {/* <TextField source="id" /> */}
         </Datagrid>
     </List>
 );
-const PostTitle = ({ record }) => {
-    return <span>Campaign Name: {record ? `"${record.name}"` : ""}</span>;
-};
 
 export const CampaignEdit = (props) => (
     <Edit {...props} title={<PostTitle />} /*aside={<Aside props={props} />}*/>
@@ -170,15 +183,3 @@ export const CampaignEdit = (props) => (
         </SimpleForm>
     </Edit>
 );
-
-// export const CategoryCreate = (props) => (
-//     <Create {...props}>
-//         <SimpleForm>
-//             <TextInput source="name" />
-//             <TextInput source="description" />
-//             {/* <TextInput source="createdBy" /> */}
-//             {/* <TextInput source="updatedBy" /> */}
-//             {/* <TextInput source="id" /> */}
-//         </SimpleForm>
-//     </Create>
-// );
