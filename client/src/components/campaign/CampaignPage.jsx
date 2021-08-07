@@ -80,7 +80,7 @@ const SortByToVerify = () => (
                 page: 1,
                 perPage: 5,
                 sort: "isVerified:ASC,isVerifyDocument:ASC,expiresAt",
-                order: "DESC",
+                order: "ASC",
             }),
         }}
     >
@@ -198,7 +198,7 @@ export const CampaignShow = (props) => (
                 <BooleanField source="isVerified" label="Verified?" />
                 <BooleanField
                     source="isVerifyDocument"
-                    label="Document Submitted?"
+                    label="Need More Proofs?"
                 />
                 <NumberField source="limit.$numberDecimal" label="Limit" />
                 <DateField source="expiresAt" label="Expires" />
@@ -212,6 +212,21 @@ export const CampaignShow = (props) => (
                 >
                     <TextField source="name" />
                 </ReferenceField>
+            </Tab>
+            <Tab label="Proofs" path="campaignproofs">
+                <ReferenceManyField
+                    // label="Proofs"
+                    target="campaignId"
+                    reference="campaignproofs"
+                    addLabel={false}
+                >
+                    <Datagrid>
+                        <CusImageField source="document" width={300} />
+                        <BooleanField source="isChecked" label="Checked?" />
+                        <TextField source="id" />
+                        <EditButton />
+                    </Datagrid>
+                </ReferenceManyField>
             </Tab>
             <Tab label="Comments" path="campaigncomments">
                 <ReferenceManyField
@@ -275,7 +290,7 @@ export const CampaignList = (props) => (
     <List
         {...props}
         sort={{
-            field: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
+            field: "expiresAt:DESC,createdAt",
             order: "DESC",
         }}
         perPage={5}
@@ -287,10 +302,7 @@ export const CampaignList = (props) => (
             <TextField source="name" className={{ width: "100px" }} />
             <CusImageField source="document" />
             <BooleanField source="isVerified" label="Verified?" />
-            <BooleanField
-                source="isVerifyDocument"
-                label="Document Submitted?"
-            />
+            <BooleanField source="isVerifyDocument" label="Need More Proofs?" />
             <NumberField source="limit.$numberDecimal" label="Limit" />
             <DateField source="expiresAt" label="Expires" />
             <ReferenceField source="categoryId" reference="categories">
@@ -338,10 +350,10 @@ export const CampaignEdit = (props) => (
                     reference="campaignproofs"
                 >
                     <Datagrid>
-                        <EditButton />
-                        <BooleanField source="isChecked" label="Checked?" />
                         <CusImageField source="document" width={300} />
+                        <BooleanField source="isChecked" label="Checked?" />
                         <TextField source="id" />
+                        <EditButton />
                     </Datagrid>
                 </ReferenceManyField>
             </Box>
