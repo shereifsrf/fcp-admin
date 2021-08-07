@@ -13,7 +13,7 @@ const getQuery = (req) => {
   //   req.query.sortBy._id = req.query.sortBy.id;
   //   delete req.query.sortBy.id;
   // }
-  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId', 'expiresAt']);
+  const filter = pick(req.query.filter, ['name', 'role', '_id', 'campaignId', 'expiresAt', 'isVerified']);
   if (!isEmpty(filter.campaignId)) {
     filter.campaignId = mongoose.Types.ObjectId(filter.campaignId);
   }

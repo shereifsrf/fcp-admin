@@ -23,9 +23,14 @@ import {
     TopToolbar,
     ReferenceManyField,
     EditButton,
+    ExportButton,
 } from "react-admin";
 import { getImageSrc } from "../../utils";
 import { Box, Button, FormHelperText, Typography } from "@material-ui/core";
+import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
+import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
+import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 
 const handleImage = (src) => {
     var iframe =
@@ -57,7 +62,29 @@ CusImageField.defaultProps = {
     label: "",
 };
 
-const SortByViews = () => (
+const SortByToVerify = () => (
+    <Button
+        color="primary"
+        component={Link}
+        to={{
+            pathname: "/campaigns",
+            search: stringify({
+                filter: JSON.stringify({
+                    expiresAt: { $gte: new Date(Date.now()).toISOString() },
+                    isVerified: false,
+                }),
+                page: 1,
+                perPage: 5,
+                sort: "isVerified:ASC,isVerifyDocument:ASC,expiresAt",
+                order: "DESC",
+            }),
+        }}
+    >
+        <FormatListNumberedIcon /> To -verify
+    </Button>
+);
+
+const SortByExpired = () => (
     <Button
         color="primary"
         component={Link}
@@ -65,20 +92,66 @@ const SortByViews = () => (
             pathname: "/campaigns",
             search: stringify({
                 page: 1,
-                perPage: 10,
+                perPage: 5,
                 sort: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
                 order: "DESC",
-                filter: {},
+                filter: JSON.stringify({
+                    expiresAt: { $lt: new Date(Date.now()).toISOString() },
+                }),
             }),
         }}
     >
-        Sort by non-verified
+        <ReportProblemIcon /> Expired
     </Button>
 );
 
-const PostEditActions = ({ basePath, record, resource }) => (
+const SortByVerified = () => (
+    <Button
+        color="primary"
+        component={Link}
+        to={{
+            pathname: "/campaigns",
+            search: stringify({
+                page: 1,
+                perPage: 5,
+                sort: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
+                order: "DESC",
+                filter: JSON.stringify({
+                    expiresAt: { $gte: new Date(Date.now()).toISOString() },
+                    isVerified: true,
+                }),
+            }),
+        }}
+    >
+        <VerifiedUserIcon /> Verified
+    </Button>
+);
+
+const SortByDefault = () => (
+    <Button
+        color="primary"
+        component={Link}
+        to={{
+            pathname: "/campaigns",
+            search: stringify({
+                page: 1,
+                perPage: 5,
+                sort: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
+                order: "DESC",
+            }),
+        }}
+    >
+        <BookmarkIcon /> Default
+    </Button>
+);
+
+const ListActions = ({ basePath, record, resource }) => (
     <TopToolbar>
-        <SortByViews />
+        <SortByDefault />
+        <SortByToVerify />
+        <SortByExpired />
+        <SortByVerified />
+        {/* <ExportButton /> */}
     </TopToolbar>
 );
 
@@ -89,15 +162,12 @@ const PostTitle = ({ record }) => {
 export const CampaignList = (props) => (
     <List
         {...props}
-        actions={<PostEditActions />}
         sort={{
             field: "isVerified:ASC,isVerifyDocument:ASC,createdAt:DESC,expiresAt",
             order: "DESC",
         }}
-        filter={{
-            expiresAt: { $gte: new Date(Date.now()).toISOString() },
-        }}
         perPage={5}
+        actions={<ListActions />}
     >
         <Datagrid rowClick="edit">
             {/* <TextField source="document.data.type" /> */}
