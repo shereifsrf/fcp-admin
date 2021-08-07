@@ -4,6 +4,9 @@ const userRoute = require('./user.route');
 const categoryRoute = require('./category.route');
 const campaignRoute = require('./campaign.route');
 const proofRoute = require('./proof.route');
+const commentRoute = require('./comment.route');
+const donationRoute = require('./donation.route');
+const reportingRoute = require('./reporting.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -29,6 +32,18 @@ const defaultRoutes = [
   {
     path: '/campaignproofs',
     route: proofRoute,
+  },
+  {
+    path: '/campaignreportings',
+    route: reportingRoute,
+  },
+  {
+    path: '/campaigncomments',
+    route: commentRoute,
+  },
+  {
+    path: '/campaigndonations',
+    route: donationRoute,
   },
   {
     path: '/status',

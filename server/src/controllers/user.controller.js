@@ -31,7 +31,7 @@ const updateUser = catchAsync(async (req, res) => {
   const userInCharge = req.user;
   const { userId } = req.params;
   const userToUpdate = await userService.getUserById(userId);
-  if (userInCharge.role === MASTER || ([ADMIN, MASTER].includes(userToUpdate) && userInCharge.id !== userId)) {
+  if (userInCharge.role === MASTER || (![ADMIN, MASTER].includes(userToUpdate.role) && userInCharge.id !== userId)) {
     const user = await userService.updateUserById(userId, req.body);
     res.send(user);
   } else {

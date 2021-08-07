@@ -25,6 +25,9 @@ import {
     ReferenceManyField,
     EditButton,
     ExportButton,
+    Show,
+    TabbedShowLayout,
+    Tab,
 } from "react-admin";
 import { getImageSrc } from "../../utils";
 import { Box, Button, FormHelperText, Typography } from "@material-ui/core";
@@ -157,8 +160,116 @@ const ListActions = ({ basePath, record, resource }) => (
 );
 
 const PostTitle = ({ record }) => {
-    return <span>Campaign Name: {record ? `"${record.name}"` : ""}</span>;
+    return <span>Campaign ID: {record ? `"${record.id}"` : ""}</span>;
 };
+
+// const Aside = () => {
+//     const record = useRecordContext();
+//     return (
+//         <div style={{ width: 200, margin: "1em" }}>
+//             <Typography variant="h6">Campaign Reporting</Typography>
+//             {record && (
+//                 <ReferenceManyField
+//                     label="Proofs"
+//                     target="campaignId"
+//                     reference="campaignreportings"
+//                 >
+//                     <Datagrid>
+//                         <BooleanField source="isChecked" label="Checked?" />
+//                         <TextField multiline source="message" />
+//                         <EditButton />
+//                     </Datagrid>
+//                 </ReferenceManyField>
+//             )}
+//         </div>
+//     );
+// };
+
+export const CampaignShow = (props) => (
+    <Show {...props} title={<PostTitle />}>
+        <TabbedShowLayout>
+            <Tab label="Camapaign">
+                <TextField source="name" className={{ width: "100px" }} />
+                <CusImageField
+                    source="document"
+                    label="Cover Image"
+                    width="500"
+                />
+                <BooleanField source="isVerified" label="Verified?" />
+                <BooleanField
+                    source="isVerifyDocument"
+                    label="Document Submitted?"
+                />
+                <NumberField source="limit.$numberDecimal" label="Limit" />
+                <DateField source="expiresAt" label="Expires" />
+                <ReferenceField source="categoryId" reference="categories">
+                    <TextField source="name" label="category" />
+                </ReferenceField>
+                <ReferenceField
+                    source="userId"
+                    reference="users"
+                    linkType="show"
+                >
+                    <TextField source="name" />
+                </ReferenceField>
+            </Tab>
+            <Tab label="Comments" path="campaigncomments">
+                <ReferenceManyField
+                    // label="Proofs"
+                    target="campaignId"
+                    reference="campaigncomments"
+                    addLabel={false}
+                >
+                    <Datagrid>
+                        <TextField multiline source="comment" />
+                        <ReferenceField
+                            source="userId"
+                            reference="users"
+                            linkType="show"
+                        >
+                            <TextField source="name" />
+                        </ReferenceField>
+                        {/* <EditButton /> */}
+                    </Datagrid>
+                </ReferenceManyField>
+            </Tab>
+            <Tab label="Donations" path="campaigndonations">
+                <ReferenceManyField
+                    // label="Proofs"
+                    target="campaignId"
+                    reference="campaigndonations"
+                    addLabel={false}
+                >
+                    <Datagrid>
+                        <ReferenceField
+                            source="userId"
+                            reference="users"
+                            linkType="show"
+                        >
+                            <TextField source="name" />
+                        </ReferenceField>
+                        <NumberField source="amount" />
+                        {/* <EditButton /> */}
+                    </Datagrid>
+                </ReferenceManyField>
+            </Tab>
+            <Tab label="Reportings" path="campaignreportings">
+                <ReferenceManyField
+                    label="Proofs"
+                    target="campaignId"
+                    reference="campaignreportings"
+                    addLabel={false}
+                >
+                    <Datagrid>
+                        <BooleanField source="isChecked" label="Checked?" />
+                        <TextField multiline source="message" />
+                        <EditButton />
+                    </Datagrid>
+                </ReferenceManyField>
+            </Tab>
+        </TabbedShowLayout>
+    </Show>
+);
 
 export const CampaignList = (props) => (
     <List
@@ -170,7 +281,7 @@ export const CampaignList = (props) => (
         perPage={5}
         actions={<ListActions />}
     >
-        <Datagrid rowClick="edit">
+        <Datagrid rowClick="show">
             {/* <TextField source="document.data.type" /> */}
 
             <TextField source="name" className={{ width: "100px" }} />
@@ -182,36 +293,18 @@ export const CampaignList = (props) => (
             />
             <NumberField source="limit.$numberDecimal" label="Limit" />
             <DateField source="expiresAt" label="Expires" />
-            {/* <TextField source="description" /> */}
             <ReferenceField source="categoryId" reference="categories">
                 <TextField source="name" label="category" />
             </ReferenceField>
             <ReferenceField source="userId" reference="users" linkType="show">
                 <TextField source="name" />
             </ReferenceField>
-            {/* <ReferenceField
-                source="updatedBy"
-                reference="users"
-                linkType="show"
-            >
-                <TextField source="name" />
-            </ReferenceField> */}
-            {/* <ReferenceField
-                source="createdBy"
-                reference="users"
-                linkType="show"
-            >
-                <TextField source="name" />
-            </ReferenceField> */}
-            {/* <DateField source="updatedAt" label="Updated On" />
-            <DateField source="createdAt" label="Created On" /> */}
-            {/* <TextField source="id" /> */}
         </Datagrid>
     </List>
 );
 
 export const CampaignEdit = (props) => (
-    <Edit {...props} title={<PostTitle />} /*aside={<Aside props={props} />}*/>
+    <Edit {...props} title={<PostTitle />} /*aside={<Aside />}*/>
         <SimpleForm>
             <TextField source="id" label="Campaign id" />
             <CusImageField source="document" width={300} label="Cover Image" />
@@ -219,8 +312,11 @@ export const CampaignEdit = (props) => (
             <ReferenceField source="userId" reference="users">
                 <TextField source="name" />
             </ReferenceField>
-            <BooleanInput source="isVerified" />
-            <BooleanInput source="isVerifyDocument" />
+            <BooleanInput source="isVerified" label="Verified?" />
+            <BooleanInput
+                source="isVerifyDocument"
+                label="Need Document submission?"
+            />
             <DateInput source="expiresAt" />
             <TextInput multiline source="description" />
             <NumberInput source="limit.$numberDecimal" label="Limit" />

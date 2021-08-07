@@ -5,3 +5,6 @@ module.exports.userService = require('./user.service');
 module.exports.categoryService = require('./category.service');
 module.exports.campaignService = require('./campaign.service');
 module.exports.proofService = require('./proof.service');
+module.exports.reportingService = require('./reporting.service');
+module.exports.commentService = require('./comment.service');
+module.exports.donationService = require('./donation.service');

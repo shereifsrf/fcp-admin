@@ -17,6 +17,8 @@ import {
     useNotify,
     SelectInput,
     PasswordInput,
+    TopToolbar,
+    EditButton,
 } from "react-admin";
 
 const restrictedRoles = ["ADMIN", "MASTER"];
@@ -50,8 +52,18 @@ const rolesA = [
     { id: "DONOR", name: "DONOR" },
 ];
 
-export const UserShow = (props: any) => (
-    <Show {...props}>
+const ShowActions = ({ data, basePath, permissions }: any) => {
+    return (
+        <TopToolbar>
+            {data && isEditable(data, permissions) && (
+                <EditButton basePath={basePath} record={data} />
+            )}
+        </TopToolbar>
+    );
+};
+
+export const UserShow = ({ permissions, ...props }: any) => (
+    <Show {...props} actions={<ShowActions permissions={permissions} />}>
         <SimpleShowLayout>
             {/* <TextField source="id" /> */}
             <TextField source="name" />
@@ -77,9 +89,7 @@ export const UserList = ({ permissions, ...props }: any) => (
         }}
     >
         <Datagrid
-            rowClick={(_: any, __: any, record) =>
-                isEditable(record, permissions) ? "edit" : "show"
-            }
+            rowClick="show"
             isRowSelectable={(record) => isEditable(record, permissions)}
         >
             <TextField source="name" />
