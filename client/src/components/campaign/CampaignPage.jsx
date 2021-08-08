@@ -188,7 +188,7 @@ const PostTitle = ({ record }) => {
 export const CampaignShow = (props) => (
     <Show {...props} title={<PostTitle />}>
         <TabbedShowLayout>
-            <Tab label="Camapaign">
+            <Tab label="Campaign">
                 <TextField source="name" className={{ width: "100px" }} />
                 <CusImageField
                     source="document"

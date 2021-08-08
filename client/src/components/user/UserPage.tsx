@@ -23,7 +23,7 @@ import {
 
 const restrictedRoles = ["ADMIN", "MASTER"];
 const isEditable = (record: any, permissions: string) => {
-    if (permissions === "MASTER") {
+    if (permissions === "MASTER" && record.role !== "MASTER") {
         return true;
     } else {
         return !restrictedRoles.includes(record.role);
