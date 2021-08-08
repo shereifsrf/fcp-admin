@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const { isEmpty } = require('lodash');
 const ApiError = require('../utils/ApiError');
 const catchAsync = require('../utils/catchAsync');
-const { campaignService, userService } = require('../services');
+const { campaignService, userService, emailService } = require('../services');
 const { getQuery } = require('../utils/helper');
 const { DONOR, CAMPAIGNER } = require('../config/roles');
 
@@ -32,6 +32,9 @@ const updateCampaign = catchAsync(async (req, res) => {
   const user = await userService.getUserById(userId);
   if (user.role === DONOR && req.body.isVerified === true) {
     await userService.updateUserById(userId, { role: CAMPAIGNER });
+  }
+  if (req.body.remarks || req.body.isVerified) {
+    await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, req.body.isVerified ? 'Verified' : 'Pending');
   }
   const campaign = await campaignService.updateCampaignById(campaignId, req.body);
   res.send(campaign);

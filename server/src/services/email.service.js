@@ -2,7 +2,18 @@ const nodemailer = require('nodemailer');
 const config = require('../config/config');
 const logger = require('../config/logger');
 
-const transport = nodemailer.createTransport(config.email.smtp);
+const transport = nodemailer.createTransport({
+  service: 'gmail',
+  // secure: true,
+  auth: {
+    type: 'oauth2',
+    user: config.email.username,
+    clientId: config.email.clientId,
+    clientSecret: config.email.clientSecret,
+    refreshToken: config.email.refreshToken,
+    // pass: emailConfig.password,
+  },
+});
 /* istanbul ignore next */
 if (config.env !== 'test') {
   transport
@@ -20,7 +31,12 @@ if (config.env !== 'test') {
  */
 const sendEmail = async (to, subject, text) => {
   const msg = { from: config.email.from, to, subject, text };
-  await transport.sendMail(msg);
+  try {
+    await transport.sendMail(msg);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.log(e);
+  }
 };
 
 /**
@@ -36,6 +52,14 @@ const sendResetPasswordEmail = async (to, token) => {
   const text = `Dear user,
 To reset your password, click on this link: ${resetPasswordUrl}
 If you did not request any password resets, then ignore this email.`;
+  await sendEmail(to, subject, text);
+};
+
+const sendCampaignUpdateEmail = async (to, remarks, status) => {
+  const subject = `Campaign Updates - ${status}`;
+  // replace this url with the link to the reset password page of your front-end app
+  const text = `Dear user,
+Our admin has added comment on your campaign: '${remarks}'`;
   await sendEmail(to, subject, text);
 };
 
@@ -59,5 +83,6 @@ module.exports = {
   transport,
   sendEmail,
   sendResetPasswordEmail,
+  sendCampaignUpdateEmail,
   sendVerificationEmail,
 };

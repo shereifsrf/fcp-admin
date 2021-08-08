@@ -212,6 +212,7 @@ export const CampaignShow = (props) => (
                 >
                     <TextField source="name" />
                 </ReferenceField>
+                <TextField source="remarks" />
             </Tab>
             <Tab label="Proofs" path="campaignproofs">
                 <ReferenceManyField
@@ -341,7 +342,7 @@ export const CampaignEdit = (props) => (
             <ReferenceField source="updatedBy" reference="users">
                 <TextField source="name" />
             </ReferenceField>
-            <TextInput source="remark" />
+            <TextInput source="remarks" />
             <Box mt={3}>
                 <Typography variant="h6">Campaign Proofs</Typography>
                 <ReferenceManyField

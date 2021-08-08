@@ -51,14 +51,13 @@ module.exports = {
     verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
   },
   email: {
-    smtp: {
-      host: envVars.SMTP_HOST,
-      port: envVars.SMTP_PORT,
-      auth: {
-        user: envVars.SMTP_USERNAME,
-        pass: envVars.SMTP_PASSWORD,
-      },
-    },
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    username: process.env.EMAIL_USERNAME,
+    password: process.env.EMAIL_PASSWORD,
+    refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     from: envVars.EMAIL_FROM,
   },
 };
