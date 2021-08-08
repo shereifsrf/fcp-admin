@@ -34,7 +34,12 @@ const updateCampaign = catchAsync(async (req, res) => {
     await userService.updateUserById(userId, { role: CAMPAIGNER });
   }
   if (req.body.remarks || req.body.isVerified) {
-    await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, req.body.isVerified ? 'Verified' : 'Pending');
+    await emailService.sendCampaignUpdateEmail(
+      user.email,
+      req.body.remarks,
+      req.body.isVerified ? 'Verified' : 'Pending',
+      req.body.name
+    );
   }
   const campaign = await campaignService.updateCampaignById(campaignId, req.body);
   res.send(campaign);

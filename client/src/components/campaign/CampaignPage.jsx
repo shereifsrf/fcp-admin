@@ -342,7 +342,7 @@ export const CampaignEdit = (props) => (
             <ReferenceField source="updatedBy" reference="users">
                 <TextField source="name" />
             </ReferenceField>
-            <TextInput source="remarks" />
+            <TextInput multiline source="remarks" />
             <Box mt={3}>
                 <Typography variant="h6">Campaign Proofs</Typography>
                 <ReferenceManyField
