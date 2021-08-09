@@ -29,20 +29,31 @@ const getCampaign = catchAsync(async (req, res) => {
 
 const updateCampaign = catchAsync(async (req, res) => {
   const { campaignId } = req.params;
+  let isSent = false;
   const { userId } = req.body;
+  let campaign = await campaignService.getCampaignById(campaignId);
   const user = await userService.getUserById(userId);
   if (user.role === DONOR && req.body.isVerified === true) {
     await userService.updateUserById(userId, { role: CAMPAIGNER });
   }
-  if (req.body.remarks || req.body.isVerified) {
-    await emailService.sendCampaignUpdateEmail(
-      user.email,
-      req.body.remarks,
-      req.body.isVerified ? 'Verified' : 'Pending',
-      req.body.name
-    );
+
+  if (campaign.isVerified !== req.body.isVerified) {
+    if (req.body.isVerified) {
+      await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Verified', req.body.name);
+      isSent = true;
+    } else if (!req.body.isVerified) {
+      await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Unverified', req.body.name);
+      isSent = true;
+    }
   }
-  const campaign = await campaignService.updateCampaignById(campaignId, req.body);
+  if (campaign.isVerifyDocument !== req.body.isVerifyDocument) {
+    if (req.body.isVerifyDocument)
+      await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'VerifyDocument', req.body.name);
+  } else if (!isSent) {
+    await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Pending', req.body.name);
+  }
+
+  campaign = await campaignService.updateCampaignById(campaignId, req.body);
   res.send(campaign);
 });
 

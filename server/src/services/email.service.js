@@ -70,6 +70,12 @@ const sendCampaignUpdateEmail = async (to, remarks, status, campaign) => {
     case 'Pending':
       text += `Admin has amendments on this campaign`;
       break;
+    case 'Unverified':
+      text += `Admin has unverified the campaign`;
+      break;
+    case 'VerifyDocument':
+      text += `Please add verification documents`;
+      break;
     case 'Changes Rejected':
       text += `Admin has Rejected changes on this campaign`;
       break;
