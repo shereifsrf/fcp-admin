@@ -23,6 +23,7 @@ const getCampaign = catchAsync(async (req, res) => {
   if (!campaign) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Campaign not found');
   }
+  campaign.remarks = '';
   res.send(campaign);
 });
 
