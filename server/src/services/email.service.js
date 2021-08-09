@@ -1,3 +1,4 @@
+const { isEmpty } = require('lodash');
 const nodemailer = require('nodemailer');
 const config = require('../config/config');
 const logger = require('../config/logger');
@@ -51,16 +52,51 @@ const sendResetPasswordEmail = async (to, token) => {
   const resetPasswordUrl = `http://link-to-app/reset-password?token=${token}`;
   const text = `Dear user,
 To reset your password, click on this link: ${resetPasswordUrl}
-If you did not request any password resets, then ignore this email.`;
+If you did not request any password resets, then ignore this email.
+
+
+Regards,
+Flush Cancer Project`;
   await sendEmail(to, subject, text);
 };
 
-const sendCampaignUpdateEmail = async (to, remarks, status, campaign, isRemarks = true) => {
+const sendCampaignUpdateEmail = async (to, remarks, status, campaign) => {
   const subject = `Campaign Updates - ${campaign}`;
+  let text = 'Dear user,\n';
+  switch (status) {
+    case 'Verified':
+      text += `Your campaign '${campaign}' is Verified`;
+      break;
+    case 'Pending':
+      text += `Admin has amendments on this campaign`;
+      break;
+    case 'Changes Rejected':
+      text += `Admin has Rejected changes on this campaign`;
+      break;
+
+    case 'Changes Approved':
+      text += `Admin has Approved changes on this campaign`;
+      break;
+    default:
+      break;
+  }
+
+  if (!isEmpty(remarks)) {
+    text += `\nAdmin Comment: '${remarks}'`;
+  }
+  text += `\n\nRegards,\nFlush Cancer Project`;
+  await sendEmail(to, subject, text);
+};
+
+const sendCampaignDeleteEmail = async (to, campaign) => {
+  const subject = `Campaign Deleted - ${campaign}`;
   // replace this url with the link to the reset password page of your front-end app
   const text = `Dear user,
-${status === 'Verified' ? `Your campaign '${campaign}' is Verified` : ''}
-${isRemarks ? `Our admin has added comment on your campaign: '${remarks}'` : `Changes has been aprroved for '${campaign}'`}`;
+Your reuqest for campaign deletion has been approved.
+
+
+Regards,
+Flush Cancer Project`;
   await sendEmail(to, subject, text);
 };
 
@@ -86,4 +122,5 @@ module.exports = {
   sendResetPasswordEmail,
   sendCampaignUpdateEmail,
   sendVerificationEmail,
+  sendCampaignDeleteEmail,
 };

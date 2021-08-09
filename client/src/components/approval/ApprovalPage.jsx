@@ -18,6 +18,7 @@ import {
     EditButton,
     SimpleShowLayout,
     TopToolbar,
+    TextInput,
 } from "react-admin";
 import { getImageSrc } from "../../utils";
 const handleImage = (src) => {
@@ -71,7 +72,7 @@ export const ApprovalList = (props) => (
     <List
         {...props}
         sort={{
-            field: "expiresAt:ASC,isApproved",
+            field: "expiresAt:ASC,isApproved:DESC,isReject:ASC",
             order: "DESC",
         }}
         perPage={5}
@@ -79,6 +80,8 @@ export const ApprovalList = (props) => (
     >
         <Datagrid rowClick="show">
             <BooleanField source="isApproved" />
+            <BooleanField source="isReject" label="Reject?" />
+            <BooleanField source="isDelete" label="Delete Request?" />
             <ReferenceField
                 source="campaignId"
                 reference="campaigns"
@@ -118,7 +121,10 @@ export const ApprovalShow = (props) => (
                 <TextField source="name" />
             </ReferenceField>
             <CusImageField source="document" label="Cover Image" width="500" />
-            <BooleanField source="isApproved" />
+            <BooleanField source="isApproved" label="Approve?" />
+            <BooleanField source="isReject" label="Reject?" />
+            <TextField multiline source="remarks" />
+            <BooleanField source="isDelete" label="Delete request?" />
             <DateField source="expiresAt" label="Expires" />
             <NumberField source="limit.$numberDecimal" label="Limit" />
             <ReferenceField source="categoryId" reference="categories">
@@ -134,8 +140,11 @@ export const ApprovalShow = (props) => (
 export const ApprovalEdit = (props) => (
     <Edit {...props} title={<PostTitle />} /*aside={<Aside />}*/>
         <SimpleForm>
-            <CusImageField source="document" />
-            <BooleanInput source="isApproved" />
+            <CusImageField source="document" label="Cover Image" width="500" />
+            <BooleanInput source="isApproved" label="Approve?" />
+            <BooleanInput source="isReject" label="Reject?" />
+            <TextInput multiline source="remarks" />
+            <BooleanInput source="isDelete" label="Delete request?" />
             <DateField source="expiresAt" label="Expires" />
             <NumberField source="limit.$numberDecimal" label="Limit" />
             <ReferenceField source="categoryId" reference="categories">

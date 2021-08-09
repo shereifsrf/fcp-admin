@@ -33,6 +33,16 @@ const approvalSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    isreject: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    isDelete: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     limit: {
       type: mongoose.Schema.Types.Decimal128,
       required: true,

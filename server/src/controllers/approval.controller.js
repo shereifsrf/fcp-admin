@@ -22,6 +22,7 @@ const getApproval = catchAsync(async (req, res) => {
   if (!approval) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Approval not found');
   }
+  approval.remarks = '';
   res.send(approval);
 });
 
@@ -29,18 +30,31 @@ const updateApproval = catchAsync(async (req, res) => {
   const campaign = await campaignService.getCampaignById(req.body.campaignId);
   const user = await userService.getUserById(campaign.userId);
 
-  if (req.body.isApproved) {
-    await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Changes Approved', req.body.name, false);
-  }
+  if (req.body.isDelete === true && req.body.isApproved === true) {
+    const approval = await approvalService.getApprovalById(req.params.approvalId);
+    await campaignService.deleteCampaignById(req.body.campaignId);
+    await approvalService.deleteApprovalById(req.params.approvalId);
+    await emailService.sendCampaignDeleteEmail(user.email, req.body.name);
 
-  if (campaign && campaign.isVerified && req.body.isApproved) {
-    await campaignService.updateCampaignById(
-      req.body.campaignId,
-      omit(req.body, ['isApproved', 'campaignId', 'updatedAt', 'updatedBy'])
-    );
+    res.send(approval);
+  } else {
+    if (req.body.isReject) {
+      await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Changes Rejected', req.body.name);
+    } else await emailService.sendCampaignUpdateEmail(user.email, req.body.remarks, 'Changes Approved', req.body.name);
+
+    if (campaign && campaign.isVerified && req.body.isApproved) {
+      await campaignService.updateCampaignById(
+        req.body.campaignId,
+        omit(req.body, ['isApproved', 'campaignId', 'updatedAt', 'updatedBy'])
+      );
+    }
+    const approval = await approvalService.updateApprovalById(req.params.approvalId, {
+      ...req.body,
+      isApproved: true,
+      isDelete: false,
+    });
+    res.send(approval);
   }
-  const approval = await approvalService.updateApprovalById(req.params.approvalId, req.body);
-  res.send(approval);
 });
 
 const deleteApproval = catchAsync(async (req, res) => {
