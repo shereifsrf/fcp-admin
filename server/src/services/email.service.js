@@ -55,12 +55,12 @@ If you did not request any password resets, then ignore this email.`;
   await sendEmail(to, subject, text);
 };
 
-const sendCampaignUpdateEmail = async (to, remarks, status, campaign) => {
+const sendCampaignUpdateEmail = async (to, remarks, status, campaign, isRemarks = true) => {
   const subject = `Campaign Updates - ${status}`;
   // replace this url with the link to the reset password page of your front-end app
   const text = `Dear user,
 ${status === 'Verified' ? `Your campaign '${campaign}' is Verified` : ''}
-Our admin has added comment on your campaign: '${remarks}'`;
+${isRemarks ? `Our admin has added comment on your campaign: '${remarks}'` : `Changes has been aprroved for '${campaign}'`}`;
   await sendEmail(to, subject, text);
 };
 

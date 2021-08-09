@@ -30,6 +30,11 @@ import {
     CampaignReportingList,
 } from "./components/reporting/ReportingPage";
 import ReportProblemIcon from "@material-ui/icons/ReportProblem";
+import {
+    ApprovalList,
+    ApprovalEdit,
+    ApprovalShow,
+} from "./components/approval/ApprovalPage";
 
 const App = () => (
     <Admin
@@ -64,6 +69,13 @@ const App = () => (
         <Resource name="campaignproofs" edit={ProofEdit} />
         <Resource name="campaigncomments" />
         <Resource name="campaigndonations" />
+        <Resource
+            name="campaignapprovals"
+            options={{ label: "Change Approvals" }}
+            edit={ApprovalEdit}
+            list={ApprovalList}
+            show={ApprovalShow}
+        />
         <Resource
             options={{ label: "Repotings" }}
             name="campaignreportings"

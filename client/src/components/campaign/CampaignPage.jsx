@@ -24,7 +24,6 @@ import {
     TopToolbar,
     ReferenceManyField,
     EditButton,
-    ExportButton,
     Show,
     TabbedShowLayout,
     Tab,
@@ -226,6 +225,33 @@ export const CampaignShow = (props) => (
                         <BooleanField source="isChecked" label="Checked?" />
                         <TextField source="id" />
                         <EditButton />
+                    </Datagrid>
+                </ReferenceManyField>
+            </Tab>
+            <Tab label="approvals" path="campaignapprovals">
+                <ReferenceManyField
+                    target="campaignId"
+                    reference="campaignapprovals"
+                    addLabel={false}
+                >
+                    <Datagrid>
+                        <EditButton />
+                        <CusImageField source="document" />
+                        <BooleanField source="isApproved" />
+                        <DateField source="expiresAt" label="Expires" />
+                        <NumberField
+                            source="limit.$numberDecimal"
+                            label="Limit"
+                        />
+                        <ReferenceField
+                            source="categoryId"
+                            reference="categories"
+                        >
+                            <TextField source="name" />
+                        </ReferenceField>
+                        <DateField source="createdAt" />
+                        <DateField source="updatedAt" />
+                        <TextField source="id" />
                     </Datagrid>
                 </ReferenceManyField>
             </Tab>

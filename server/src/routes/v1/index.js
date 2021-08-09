@@ -7,6 +7,7 @@ const proofRoute = require('./proof.route');
 const commentRoute = require('./comment.route');
 const donationRoute = require('./donation.route');
 const reportingRoute = require('./reporting.route');
+const approvalRoute = require('./approval.route');
 const docsRoute = require('./docs.route');
 const config = require('../../config/config');
 
@@ -44,6 +45,10 @@ const defaultRoutes = [
   {
     path: '/campaigndonations',
     route: donationRoute,
+  },
+  {
+    path: '/campaignapprovals',
+    route: approvalRoute,
   },
   {
     path: '/status',

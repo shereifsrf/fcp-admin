@@ -100,7 +100,7 @@ const MyProviders = {
 
     update: (resource: any, params: any) => {
         let newParams: any = omit(params!.data, ["id"]);
-        if (resource === "campaigns") {
+        if (["campaigns", "campaignapprovals"].includes(resource)) {
             newParams.limit = newParams.limit.$numberDecimal;
         }
         return httpClient(`${apiUrl}/${resource}/${params.id}`, {
