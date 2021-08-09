@@ -77,7 +77,7 @@ const App = () => (
             show={ApprovalShow}
         />
         <Resource
-            options={{ label: "Repotings" }}
+            options={{ label: "Reportings" }}
             name="campaignreportings"
             list={CampaignReportingList}
             edit={ReportingEdit}
